@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'student',
+    
+
 ]
+
+CRISPY_TEMPLATE_PACK='bootstrap3'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
