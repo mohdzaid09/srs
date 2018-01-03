@@ -38,9 +38,42 @@ def student_new(request):
     print(request.user)
     return render(request, 'student/student_new.html', {'form': form})
 
+
+def student_edit(request,pk):
+
+    stud = get_object_or_404(student, pk=pk)
+    if request.method == "POST":
+        form = StudentForm(request.POST,instance=stud)
+        if form.is_valid():
+            stud = form.save(commit=False)
+            stud.createdby = request.user
+            stud.save()
+            # return redirect('post_detail', pk=post.pk)
+            messages.success(request, "Student record with ID: " + str(stud.pk) + " has been updated! ")
+            return redirect(reverse_lazy('student_detail',kwargs={'pk': stud.pk }))
+    else:
+        form = StudentForm(instance=stud)
+    
+    return render(request, 'student/student_edit.html', {'form': form})
+
+
 def student_detail(request,pk):
     Student = get_object_or_404(student, pk=pk)
     return render(request, 'student/student_detail.html', {'student': Student})
+
+
+def student_remove(request,pk):
+
+    stud = get_object_or_404(student, pk=pk)
+    if request.method == "POST":
+        if request.POST.get("submit_yes", ""):
+            icnum = student.icnum
+            student.delete()
+            messages.success(request, "Student record with ID: " + str(icnum) + " has been removed! ")
+            return redirect(reverse_lazy('student_home'))
+
+    return render(request, 'student/student_confirm_delete.html', {'student': student, 'pk':pk})
+
 
 # Student JSON list filtering
 class student_list_json(BaseDatatableView):
